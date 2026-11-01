@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CarDeck</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Saira+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#050608;--line:#3c414b;--text:#dfe5ee;--dim:#98a1ae;--el:#4fb2ff;--amber:#ffb238}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{display:flex;align-items:center;justify-content:center;background:var(--ink);color:var(--text);font-family:Michroma,Arial,sans-serif}
+#stage{position:relative;width:min(88vw,calc(88vh*1300/760));aspect-ratio:1300/760;flex:none}
+#unit,#unit svg{position:absolute;inset:0;display:block;width:100%;height:100%}
+#unit{will-change:transform}
+.layer{position:absolute;pointer-events:none}
+#disc,#spindle{border-radius:50%}
+#disc{background:
+  conic-gradient(from 20deg,#fff0 0 8%,#ffffff99 9% 13%,#fff0 14% 56%,#ffffff77 57% 60%,#fff0 61%),
+  radial-gradient(circle,#fff0 60%,#ffffff55 60.5%,#fff0 61.5%),
+  conic-gradient(#bff5ff,#ffd6f5,#fff3b8,#bdffd6,#bccbff,#ffc9da,#dcffb8,#bff5ff);
+  box-shadow:0 0 0 2px #0009;will-change:transform}
+#disc.spin{animation:spin 3.4s linear infinite}
+#disc.spin.hold{animation-play-state:paused}
+#disc.spinup{animation:spinup 1.9s cubic-bezier(.12,.7,.25,1)}
+#disc.spin.reading{animation-duration:.6s;animation-play-state:running}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes spinup{from{transform:rotate(-1080deg)}to{transform:rotate(0)}}
+#shade{inset:0;background:#000;opacity:0;animation:lightsUp 1.6s linear}
+@keyframes lightsUp{0%,20%{opacity:.94}24%{opacity:.6}28%{opacity:.88}44%{opacity:.5}100%{opacity:0}}
+#spindle{background:radial-gradient(circle at 40% 35%,#fff,#aeb4bd 60%,#5d636c);box-shadow:0 0 0 1px #333}
+#spindle::after{content:"";position:absolute;inset:30%;border-radius:50%;background:#050505}
+#knob{position:absolute;border-radius:50%;cursor:grab;touch-action:none;outline:none}
+#knob:active{cursor:grabbing}
+#knob:focus-visible{outline:2px solid #fff;outline-offset:2px}
+/* the screen flips up out of the unit, so both fit in one window */
+body{--u:min(100vw,calc((100vh - 8px)/1.17))}
+body:has(#monitor:not([hidden])){flex-direction:column;--s:var(--u)}
+body:has(#monitor:not([hidden])) #stage{width:var(--u)}
+#monitor{position:relative;z-index:1;flex:none;order:-1;width:var(--u);max-width:100vw;margin-bottom:calc(var(--u)*-.02);padding:calc(var(--u)*.005);border-radius:calc(var(--u)*.02) calc(var(--u)*.02) calc(var(--u)*.006) calc(var(--u)*.006);background:linear-gradient(#1d1e23,#0b0c0f 5%,#08090b 90%,#222329);box-shadow:0 0 0 1px #000,0 10px 26px #000c;transform-origin:50% 100%;animation:flipUp .55s cubic-bezier(.2,.9,.3,1.1);font-size:calc(var(--u)*.0112)}
+#monitor[hidden]{display:none}
+.rim{padding:calc(var(--u)*.0034);border-radius:calc(var(--u)*.016);background:linear-gradient(#f2f4f7,#c4cad2 10%,#8b929c 48%,#b5bbc4 52%,#6a717b)}
+.plate{position:relative;padding:calc(var(--u)*.024) calc(var(--u)*.013) max(calc(var(--u)*.036),30px);border-radius:calc(var(--u)*.012);background:linear-gradient(#17181c,#08090c 12%)}
+/* the picture itself is never covered: every mark sits on the plate, outside this box */
+.well{box-shadow:0 0 0 1px #454b56,0 0 0 calc(var(--u)*.0026) #000}
+.mark{position:absolute;display:flex;align-items:center;gap:.7em;white-space:nowrap;font:600 1em 'Saira Condensed',Arial,sans-serif;letter-spacing:.09em;color:#8d95a1}
+.mark b{font:400 1.05em Michroma,Arial,sans-serif;letter-spacing:.2em;color:#c4cad2}
+.mark.tl{left:calc(var(--u)*.014);top:calc(var(--u)*.0065)}.mark.tr{right:calc(var(--u)*.014);top:calc(var(--u)*.0065)}
+.mark.bl{left:calc(var(--u)*.014);bottom:calc(var(--u)*.0075)}.mark.br{right:calc(var(--u)*.014);bottom:calc(var(--u)*.0075)}
+.mark i{width:.62em;height:.62em;border-radius:50%;background:#6cffc4;box-shadow:0 0 .7em #6cffc4}
+#fold{position:absolute;left:50%;bottom:2px;height:25px;padding:0 12px;transform:translateX(-50%);border:1px solid #454b56;border-radius:5px;background:linear-gradient(#34363d,#0b0c0e);color:#4fb2ff;font:10px Michroma,Arial,sans-serif;white-space:nowrap}
+#fold:hover{color:#fff;background:#2a2c33}
+/* folded: the smallest screen YouTube allows, parked beside the unit while the music plays */
+body.fold:has(#monitor:not([hidden])){flex-direction:row;--s:min(calc(100vw - 432px),calc(88vh*1300/760))}
+body.fold:has(#monitor:not([hidden])) #stage{width:var(--s)}
+body.fold #monitor{--u:400px;order:1;margin:0 0 0 12px;animation:none}
+body.fold #monitor::before,body.fold #monitor::after{display:none}
+@media (max-width:900px){body.fold:has(#monitor:not([hidden])){flex-direction:column;--s:100vw}body.fold #monitor{--u:min(100vw,400px);margin:8px 0 0}}
+#monitor::before,#monitor::after{content:"";position:absolute;bottom:calc(var(--u)*-.012);width:calc(var(--u)*.05);height:calc(var(--u)*.016);border-radius:0 0 3px 3px;background:linear-gradient(#f2f4f7,#6a717b)}
+#monitor::before{left:18%}#monitor::after{right:18%}
+#monitor iframe,#yt{display:block;width:100%;aspect-ratio:16/9;height:auto;border:0;background:#000}
+@keyframes flipUp{from{transform:perspective(900px) rotateX(-84deg);opacity:.4}to{transform:none;opacity:1}}
+
+/* the night outside: one strip that slides while the music plays */
+#world{position:fixed;inset:0;overflow:hidden;background:#04041a}
+#track{position:absolute;left:0;bottom:24vh;height:80vh;display:flex;width:max-content;animation:drive 170s linear infinite;animation-play-state:paused;will-change:transform}
+body.moving #track{animation-play-state:running}
+.strip{display:block;height:100%;width:auto;flex:none}
+@keyframes drive{to{transform:translateX(-50%)}}
+#pulse{position:absolute;left:0;right:0;bottom:24vh;height:46vh;background:radial-gradient(ellipse 70% 100% at 50% 100%,#ff5aa877,#ff5aa800);opacity:.3;will-change:opacity;mix-blend-mode:screen}
+#lamps{position:absolute;left:-30vw;top:0;bottom:0;width:26vw;background:linear-gradient(90deg,#ffc47a00,#ffc47a1f 46%,#ffd9a033 52%,#ffc47a00);mix-blend-mode:screen;opacity:0}
+body.moving #lamps{opacity:1;animation:lamps 5.2s linear infinite}
+@keyframes lamps{to{transform:translateX(170vw)}}
+#dashBand{position:absolute;left:0;right:0;bottom:0;height:27vh;background:#0a0d1c}
+#dashBand::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:#4c7cff;box-shadow:0 0 14px #4c7cff99}
+#dashBand::after{content:"";position:absolute;left:0;right:0;top:6vh;bottom:0;background:#070a14}
+.tick{position:absolute;left:0;right:0;top:0;height:clamp(24px,3.6vh,34px);overflow:hidden;background:#090406;box-shadow:0 2px 0 #2a1a20;display:flex;align-items:center;white-space:pre;color:#ffb238;font:600 clamp(15px,2.2vh,20px) 'Yu Gothic',Meiryo,'Noto Sans JP',sans-serif;text-shadow:0 0 7px #ff8a2a}
+.tick div{display:flex;flex:none;animation:tick 48s linear infinite}
+.tick::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,#0000 42%,#090406cc 52%);background-size:3px 3px;pointer-events:none}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* dash trinkets stay in the gutters beside the unit */
+body{--s:min(88vw,calc(88vh*1300/760));--g:calc((100vw - var(--s))/2)}
+.trinket{position:absolute;display:block}
+@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+#stage{z-index:1}
+#flip{left:calc(var(--g)*.2);bottom:calc(27vh - 3px);width:min(calc(var(--g)*.42),120px)}
+#wallet{left:calc(var(--g)*.14);bottom:5vh;width:min(calc(var(--g)*.66),190px)}
+#mp3{right:calc(var(--g)*.22);bottom:calc(27vh - 3px);width:min(calc(var(--g)*.42),120px)}
+#hangcd{right:calc(var(--g)*.3);top:0;width:min(calc(var(--g)*.3),90px);transform-origin:50% 0;animation:sway 5.4s ease-in-out infinite}
+#world{background:#010818}
+#pulse{background:radial-gradient(ellipse 70% 100% at 50% 100%,#39d6ff66,#39d6ff00)}
+#lamps{background:linear-gradient(90deg,#8fe0ff00,#8fe0ff22 46%,#c8f4ff38 52%,#8fe0ff00)}
+#dashBand{background:linear-gradient(#aab4c4,#5f6a7c 3vh,#20262f 7vh,#0d1118)}
+#dashBand::before{background:#39d6ff;box-shadow:0 0 22px #39d6ffcc}
+#dashBand::after{top:7vh;background:repeating-linear-gradient(45deg,#14181f 0 4px,#0a0d13 4px 8px)}
+.tick{background:#02101e;color:#7fe8ff;font-family:Consolas,'Courier New',monospace;text-shadow:0 0 7px #39d6ff;box-shadow:0 2px 0 #123a5c}
+.tick::after{background:radial-gradient(circle at 50% 50%,#0000 42%,#02101ecc 52%);background-size:3px 3px}
+@media (max-width:900px){#flip,#wallet,#mp3,#hangcd{display:none}}
+dialog{width:min(92vw,520px);padding:24px;border:1px solid var(--line);border-radius:12px;background:#0b0c10;color:var(--text)}
+dialog::backdrop{background:#000b}
+dialog h2{margin:0 0 4px;font-size:18px;font-weight:400}
+dialog p{margin:0 0 18px;color:var(--dim);font:500 15px/1.4 'Saira Condensed',Arial,sans-serif}
+.row{display:flex;gap:10px;margin-bottom:12px}
+.row>*{flex:1;min-height:44px}
+button{padding:0 16px;border:1px solid var(--line);border-radius:8px;background:#1c1d22;color:var(--text);font:12px Michroma,Arial,sans-serif;cursor:pointer}
+button:hover{background:#2a2c33}
+button:focus-visible,input:focus-visible{outline:2px solid var(--el);outline-offset:2px}
+label{display:block;margin:18px 0 6px;color:var(--dim);font:600 14px 'Saira Condensed',Arial,sans-serif}
+input[type=url]{width:100%;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:#000;color:var(--text);font:15px Arial,sans-serif}
+#trayMsg{min-height:20px;margin:12px 0 0;color:var(--amber)}
+.close{margin-top:6px;width:100%}
+@media (prefers-reduced-motion:reduce){#disc.spin,#disc.spinup,#monitor,#track,#lamps,.tick div,#hangcd{animation:none}#shade{display:none}}
+</style>
+</head>
+<body>
+<div id="world" aria-hidden="true">
+  <div id="track"><canvas class="strip"></canvas><canvas class="strip"></canvas></div>
+  <div id="pulse"></div>
+  <div id="dashBand"></div>
+  <div id="lamps"></div>
+
+  <div class="tick"><div><span></span><span></span></div></div>
+</div>
+<main id="stage">
+  <div id="unit"></div>
+  <div id="shade" class="layer"></div>
+  <canvas id="screen" class="layer" aria-hidden="true"></canvas>
+  <canvas id="ring" class="layer" aria-hidden="true"></canvas>
+  <div id="disc" class="layer spinup"></div>
+  <div id="spindle" class="layer"></div>
+  <div id="knob" role="slider" tabindex="0" aria-label="Volume, tap the disc to play or pause" aria-valuemin="0" aria-valuemax="100"></div>
+</main>
+
+<aside id="monitor" aria-label="YouTube video" hidden>
+  <div class="rim"><div class="plate">
+    <span class="mark tl"><b>NIGHTLINE</b></span><span class="mark tr">NX-2002  WIDE TFT LCD</span>
+    <div class="well"><div id="yt"></div></div>
+    <span class="mark bl"><i></i>AV 1  VIDEO IN</span><span class="mark br">IN-DASH MONITOR</span>
+    <button id="fold">FOLD SCREEN</button>
+  </div></div>
+</aside>
+
+<dialog id="tray" aria-labelledby="trayTitle">
+  <h2 id="trayTitle">Load disc 1</h2>
+  <p>Pick music from this computer, or paste a YouTube link. Your files stay on your device. Some YouTube owners block playing outside YouTube, and those videos can't play here.</p>
+  <div class="row">
+    <button id="pickFolder">Choose folder</button>
+    <button id="pickFiles">Choose files</button>
+  </div>
+  <form id="ytForm">
+    <label for="ytUrl">YouTube video or playlist link</label>
+    <div class="row">
+      <input id="ytUrl" type="url" placeholder="https://www.youtube.com/watch?v=..." style="flex:3">
+      <button type="submit">Load</button>
+    </div>
+  </form>
+  <p id="trayMsg" role="alert"></p>
+  <button class="close" id="trayClose">Close</button>
+</dialog>
+
+<input id="folderIn" type="file" webkitdirectory multiple hidden>
+<input id="filesIn" type="file" accept="audio/*" multiple hidden>
+
+<script src="core.js"></script>
+<script src="unit.js"></script>
+<script src="world.js"></script>
+<script src="player.js"></script>
+</body>
+</html>

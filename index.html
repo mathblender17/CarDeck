@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CarDeck: a 2002 car stereo for your music</title>
+<meta name="description" content="CarDeck is a free 2002-style car stereo for your browser. Load your own music or a YouTube link and drive.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Saira+Condensed:wght@500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#050608;--text:#edf1f7;--dim:#a8b2c2;--el:#4fb2ff;--amber:#ffb238;--cobalt:#0a2fb0;--deep:#04124f}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--ink)}
+body{margin:0;color:var(--text);font:500 19px/1.5 'Saira Condensed',Arial,sans-serif}
+a{color:inherit}
+h1,h2{font-family:Michroma,Arial,sans-serif;font-weight:400;letter-spacing:-.01em;margin:0}
+
+/* hero: a fixed 1600x900 scene, scaled to cover the window */
+#hero{position:relative;height:100svh;min-height:560px;overflow:hidden;background:#000}
+#scene{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;will-change:transform}
+#scene.zoom{transition:transform 1.5s cubic-bezier(.62,.02,.2,1)}
+#road,#dash{position:absolute;left:0;top:0}
+#road{width:1600px;height:660px}
+#dash{width:1600px;height:900px}
+#unitBox{position:absolute;left:452px;top:656px;width:390px;height:228px;overflow:hidden;border-radius:4px}
+#unitIn{position:absolute;left:0;top:0;width:1300px;height:760px;transform:scale(.3);transform-origin:0 0;will-change:transform}
+#unitIn svg{display:block;width:1300px;height:760px;pointer-events:none}
+#unitIn .key{pointer-events:none}
+#unitDim{position:absolute;inset:0;background:#000;opacity:.18;transition:opacity .4s}
+#cd{position:absolute;left:806px;top:112px;width:1.6px;height:150px;transform-origin:50% 0;animation:swing 4.6s ease-in-out infinite;background:#aab6cc}
+#cd i{position:absolute;left:-37px;bottom:-74px;width:76px;height:76px;border-radius:50%;
+  background:radial-gradient(circle,#0a0a0c 0 7%,#c9ced6 7.5% 20%,#fff0 21%),
+  conic-gradient(from 40deg,#bff5ff,#ffd6f5,#fff3b8,#bdffd6,#bccbff,#ffc9da,#dcffb8,#bff5ff);
+  box-shadow:0 0 18px #bfe6ff44;filter:brightness(.72)}
+@keyframes swing{0%,100%{transform:rotate(-3.5deg)}50%{transform:rotate(3.5deg)}}
+.go:focus-visible{outline:3px solid #fff;outline-offset:3px}
+body.go #unitDim{opacity:0}
+#veil{position:absolute;inset:0;background:radial-gradient(ellipse at 45% 50%,#0000 55%,#000b);pointer-events:none}
+#grain{position:absolute;inset:0;opacity:.16;mix-blend-mode:overlay;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
+#black{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .28s}
+nav{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;padding:20px 32px;transition:opacity .4s}
+nav b{font:400 15px Michroma,Arial,sans-serif;letter-spacing:.14em}
+nav a{margin-left:24px;text-decoration:none;font-size:17px;color:var(--text)}
+nav a:hover{color:var(--el)}
+#pitch{position:absolute;left:clamp(16px,4.4vw,72px);top:clamp(72px,11vh,110px);width:min(820px,calc(100vw - 32px));text-shadow:0 2px 12px #000a;transition:opacity .4s}
+#pitch h1{font-size:clamp(30px,3.5vw,50px);line-height:1.12}
+#pitch p{margin:12px 0 18px;max-width:34em;font-size:21px;line-height:1.35}
+.go{display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 26px;border:0;border-radius:10px;background:var(--el);color:#031225;font:13px Michroma,Arial,sans-serif;cursor:pointer;text-decoration:none;transition:transform .12s,background .12s}
+.go:hover{background:#86ccff}.go:active{transform:translateY(1px)}
+body.go nav,body.go #pitch{opacity:0;pointer-events:none}
+
+/* the print ad */
+#manual{position:relative;overflow:hidden;background:var(--cobalt);padding:120px clamp(16px,5vw,72px)}
+#manual::before{content:"";position:absolute;inset:0;background:conic-gradient(from 200deg at 26% 30%,#ffffff12 0 4%,#fff0 4% 9%,#ffffff0d 9% 13%,#fff0 13% 19%,#ffffff12 19% 22%,#fff0 22% 31%,#ffffff0c 31% 36%,#fff0 36% 100%),radial-gradient(ellipse at 26% 30%,#3e8dff,#0a2fb0 46%,#04124f)}
+.ad{position:relative;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) 110px;gap:48px;max-width:1360px;margin:0 auto;align-items:start}
+.ad h2{font-size:clamp(28px,3.1vw,46px);line-height:1.14}
+.ad .lead{margin:18px 0 34px;font-size:22px;line-height:1.35;max-width:32em}
+#adUnit{width:100%;aspect-ratio:1300/760;position:relative}
+#adUnit svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.spec h3{margin:0 0 6px;font:400 15px Michroma,Arial,sans-serif;color:#fff}
+.spec p{margin:0 0 26px;font-size:20px;line-height:1.35}
+.year{justify-self:end;writing-mode:vertical-rl;font:400 92px/1 Michroma,Arial,sans-serif;background:linear-gradient(90deg,#3a4ea8,#fff 46%,#8fa8e8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ad .go{margin-top:6px}
+footer{padding:64px clamp(16px,5vw,72px) 32px;background:var(--ink)}
+footer b{display:block;font:400 clamp(44px,11.6vw,178px)/1 Michroma,Arial,sans-serif;letter-spacing:-.03em;background:linear-gradient(#f4f6f9,#b8bec7 44%,#5b626d 47%,#a9b0ba);-webkit-background-clip:text;background-clip:text;color:transparent}
+footer p{margin:22px 0 0;color:var(--dim);font-size:17px}
+@media (max-width:1000px){.ad{grid-template-columns:1fr}.year{display:none}#manual{padding-top:80px;padding-bottom:80px}nav a:first-of-type{display:none}#pitch p{font-size:19px}}
+@media (prefers-reduced-motion:reduce){#cd{animation:none}html{scroll-behavior:auto}#scene.zoom{transition:none}}
+</style>
+</head>
+<body>
+<section id="hero">
+  <div id="scene">
+    <canvas id="road" width="1067" height="440" aria-hidden="true"></canvas>
+    <svg id="dash" viewBox="0 0 1600 900" aria-hidden="true"></svg>
+    <div id="cd"><i></i></div>
+    <div id="unitBox" aria-hidden="true"><div id="unitIn"></div><div id="unitDim"></div></div>
+  </div>
+  <div id="veil"></div>
+  <div id="grain"></div>
+  <nav aria-label="Main">
+    <b>CARDECK</b>
+    <span><a href="#manual">Owner's manual</a><a href="player.html">Open the player</a></span>
+  </nav>
+  <div id="pitch">
+    <h1>It's 2002. Put a disc in.</h1>
+    <p>CarDeck is a free car stereo for your browser. Load your own music or a YouTube link, and drive.</p>
+    <button class="go" id="start">Put a disc in</button>
+  </div>
+  <div id="black"></div>
+</section>
+
+<section id="manual" aria-labelledby="mh">
+  <div class="ad">
+    <div>
+      <h2 id="mh">Owner's manual, short version.</h2>
+      <p class="lead">One unit, six discs and a display that actually listens to the song. There is nothing to sign up for.</p>
+      <div id="adUnit" role="img" aria-label="The Night Line head unit, with a large display, a chrome volume dial and a row of six disc keys"></div>
+    </div>
+    <div class="spec">
+      <h3>Load a disc</h3>
+      <p>Press OPEN / CLOSE and pick a folder of music, or paste a YouTube link. Six slots, like a real disc changer.</p>
+      <h3>Watch it listen</h3>
+      <p>The spectrum reads the real audio from your files. YouTube bars are simulated, and the display says so.</p>
+      <h3>Your files stay yours</h3>
+      <p>Everything plays on your own computer. Nothing is uploaded and there is no account.</p>
+      <h3>Best on a desktop</h3>
+      <p>Made for Chrome or Edge on a big screen. It fits a phone, but the keys get small.</p>
+      <button class="go" id="start2">Put a disc in</button>
+    </div>
+    <div class="year" aria-hidden="true">2002</div>
+  </div>
+</section>
+
+<footer>
+  <b>CARDECK</b>
+  <p>A toy made for the love of old head units. Night Line and every badge here are made up, and it isn't tied to any car or stereo brand. YouTube plays through its official player.</p>
+</footer>
+
+<script src="core.js"></script>
+<script src="unit.js"></script>
+<script src="landing.js"></script>
+</body>
+</html>
