@@ -359,7 +359,7 @@ function refresh() {
   document.querySelectorAll('.preset').forEach((k, i) => { k.classList.toggle('loaded', !!S.discs[i]); k.classList.toggle('cur', i === S.slot && !!S.discs[i]) })
   document.body.classList.toggle('moving', S.playing)
   // under music the car is felt more than heard
-  Cabin.level(S.playing ? .03 : .7)
+  Cabin.level(S.playing ? .09 : .7)
   $('led-cabin').classList.toggle('on', Cabin.wanted)
   document.body.classList.toggle('fold', S.fold)
   $('fold').textContent = S.fold ? 'OPEN SCREEN' : 'FOLD SCREEN'

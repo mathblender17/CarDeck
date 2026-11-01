@@ -29,10 +29,11 @@
     master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination)
     touch = ctx.createGain(); touch.gain.value = 1; touch.connect(ctx.destination)
     const brown = noise(7, true), white = noise(5, false)
-    bed(brown, 'lowpass', 240, .6, .95)
-    bed(white, 'bandpass', 2300, .5, .02)
-    const wind = bed(white, 'bandpass', 640, 1.1, .075)
-    lfo(.07, .04, wind.g.gain); lfo(.13, 220, wind.f.frequency)
+    // laptop speakers lose most of the rumble, so the wind and tyres carry it there
+    bed(brown, 'lowpass', 380, .6, .8)
+    bed(white, 'bandpass', 2300, .5, .035)
+    const wind = bed(white, 'bandpass', 640, 1.1, .14)
+    lfo(.07, .07, wind.g.gain); lfo(.13, 220, wind.f.frequency)
   }
   function thump(when) {
     const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain()
@@ -42,7 +43,7 @@
   }
   function ring(freq, when, out = master) {
     const pan = ctx.createStereoPanner(); pan.pan.value = Math.random() * 1.2 - .6; pan.connect(out)
-    ;[[1, .05], [2.76, .018], [5.4, .007]].forEach(([k, a]) => {
+    ;[[1, .1], [2.76, .036], [5.4, .014]].forEach(([k, a]) => {
       const o = ctx.createOscillator(), g = ctx.createGain()
       o.frequency.value = freq * k
       g.gain.setValueAtTime(0, when); g.gain.linearRampToValueAtTime(a, when + .006); g.gain.exponentialRampToValueAtTime(.0002, when + 2.8 / k + .4)
