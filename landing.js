@@ -43,7 +43,7 @@ $('dash').innerHTML = `
 
 <g fill="#03040a" stroke="#22325e">${[0, 1].map(i => `<rect x="${64 + i * 150}" y="680" width="132" height="52" rx="7"/>`).join('')}</g>
 <g stroke="#121a33" stroke-width="3">${[0, 1].flatMap(i => [0, 1, 2, 3, 4].map(k => `<path d="M${74 + i * 150} ${689 + k * 8}h112"/>`)).join('')}</g>
-<text x="66" y="782" font-family="Michroma,Arial" font-size="13" fill="#47598a" letter-spacing="3">DOHC 16V</text>
+<text x="66" y="782" font-family="Michroma,Arial" font-size="13" fill="#47598a" letter-spacing="3">DOHC 24V TWIN TURBO</text>
 
 <path d="M434 650Q434 638 446 638H848Q860 638 860 650V900H434Z" fill="url(#h-stack)"/>
 <rect x="444" y="648" width="406" height="244" rx="5" fill="#030407"/>
@@ -53,9 +53,10 @@ $('dash').innerHTML = `
   <path d="M900 498Q916 452 966 452H1282Q1332 452 1348 498" fill="none" stroke="${RIM}" stroke-width="2.4"/>
   <path d="M884 648L928 508Q938 472 976 472H1272Q1310 472 1320 508L1364 648Z" fill="#04050a"/>
   <rect x="938" y="474" width="256" height="62" fill="#180a00"/>
-  <g fill="#ff9a2a" filter="url(#h-glow)">${bars}</g>
+  <g id="bars" fill="#ff9a2a" filter="url(#h-glow)" opacity=".1">${bars}</g>
   <path d="${cells(3, 1204, 38, 482, 30, 46, 5)}" fill="#ff7a1a" opacity=".1"/>
-  <path d="${[...'088'].map((c, i) => segPath(c, 1204 + i * 38, 482, 30, 46, 5)).join('')}" fill="#ff7a1a" filter="url(#h-glow)"/>
+  <path id="speed" d="" fill="#ff7a1a" filter="url(#h-glow)"/>
+  <g transform="rotate(-5 1066 496)"><rect x="1012" y="478" width="110" height="44" fill="#f6e27a"/><text x="1020" y="497" font-family="Segoe Print,Bradley Hand,cursive" font-size="13" fill="#2a2410">speedo —</text><text x="1020" y="514" font-family="Segoe Print,Bradley Hand,cursive" font-size="13" fill="#2a2410">call mechanic</text></g>
   <g transform="translate(1056 596)">${[0, 1, 2].flatMap(c => [0, 1].map(r => `<rect x="${c * 46}" y="${r * 24}" width="40" height="19" rx="2" fill="#6d1810"/>`)).join('')}
     <g fill="#ff3b2e" filter="url(#h-glow)"><rect x="46" width="40" height="19" rx="2"/><rect y="24" width="40" height="19" rx="2"/></g></g>
   <rect x="958" y="590" width="30" height="16" rx="3" fill="#2be07b" filter="url(#h-glow)"/><rect x="1252" y="590" width="30" height="16" rx="3" fill="#2f6bff" filter="url(#h-glow)"/>
@@ -66,6 +67,17 @@ $('dash').innerHTML = `
   <path d="M1012 770Q1012 748 1036 748H1212Q1236 748 1236 770V900H1012Z" fill="#0e1426" stroke="#22325e"/>
 </g>
 <circle cx="1500" cy="800" r="46" fill="#05060c" stroke="#22325e" stroke-width="2"/><circle cx="1500" cy="800" r="30" fill="#2b3142"/><rect x="1494" y="778" width="12" height="44" rx="4" fill="#0b0d14"/>`
+
+// the cluster has been dying for months: no real reading, only stray segments and the odd twitch
+const GARBLE = ['-', '0', '1', '8', ' ', ' ']
+function twitch() {
+  const pick = () => GARBLE[Math.floor(Math.random() * GARBLE.length)]
+  $('speed').setAttribute('d', [pick(), pick(), pick()].map((c, i) => segPath(c, 1204 + i * 38, 482, 30, 46, 5)).join(''))
+  const spark = Math.random() < .3
+  $('bars').setAttribute('opacity', spark ? .8 : .1)
+  setTimeout(twitch, reduced ? 4000 : spark ? 70 + Math.random() * 120 : 500 + Math.random() * 2600)
+}
+twitch()
 
 // --- the road: drawn small and scaled up, which gives the soft look of a video tape
 const BUF = 2 / 3, RW = 1600, RH = 660
@@ -245,6 +257,7 @@ function go() {
   setTimeout(() => { location.href = 'player.html' }, 3050)
 }
 $('start').onclick = $('start2').onclick = go
+Keychain.mount($('chainMount'))
 const soundLabel = () => { $('sound').textContent = Cabin.wanted ? 'Sound on' : 'Sound off' }
 $('sound').onclick = () => { Cabin.toggle(); soundLabel() }
 soundLabel()

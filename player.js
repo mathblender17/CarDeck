@@ -8,6 +8,8 @@ const BOOT = 2700, READ = reduced ? 0 : 1300, BOOT_TEXT = 'NIGHTLINE NX-2002 DSP
 
 $('unit').innerHTML = UNIT_SVG
 
+const chain = Keychain.mount($('chainMount'))
+
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v) } catch { return d } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)) } catch {} }
@@ -79,7 +81,7 @@ audio.addEventListener('error', () => {
   if (!audio.getAttribute('src') || disc()?.kind !== 'local') return
   // shortcut: an unreadable track is skipped, not reported per file; a whole bad disc stops
   if (++fails >= disc().tracks.length) { fails = 0; S.playing = false; say('CANNOT READ DISC', 5000); refresh(); return }
-  say('READ ERROR - SKIP'); advance(true, true)
+  say('READ ERROR - SKIP'); chain.comfort(); advance(true, true)
 })
 
 // --- YouTube has to stay visible, so it plays in the monitor; its audio cannot be analysed
@@ -104,7 +106,7 @@ function loadYT() {
 // 101 and 150 mean the owner blocks embedding; no player outside YouTube can get past that
 function ytError(code) {
   const d = disc(), blockedByOwner = code === 101 || code === 150
-  S.playing = false; refresh()
+  S.playing = false; refresh(); chain.comfort()
   if (d?.kind === 'yt' && d.list && ++ytFails < (yt.getPlaylist?.()?.length || 1)) { say('BLOCKED BY OWNER - SKIPPING', 1800); setTimeout(() => { if (disc() === d) yt.nextVideo() }, 1000); return }
   say(blockedByOwner ? 'OWNER BLOCKS THIS OUTSIDE YOUTUBE' : 'TUBE WILL NOT PLAY THIS', 9000)
 }
@@ -346,7 +348,8 @@ function refresh() {
   $('led-disp').classList.toggle('on', S.mode > 0)
   document.querySelectorAll('.preset').forEach((k, i) => { k.classList.toggle('loaded', !!S.discs[i]); k.classList.toggle('cur', i === S.slot && !!S.discs[i]) })
   document.body.classList.toggle('moving', S.playing)
-  Cabin.level(S.playing ? .24 : .7)
+  // under music the car is felt more than heard
+  Cabin.level(S.playing ? .03 : .7)
   $('led-cabin').classList.toggle('on', Cabin.wanted)
   document.body.classList.toggle('fold', S.fold)
   $('fold').textContent = S.fold ? 'OPEN SCREEN' : 'FOLD SCREEN'

@@ -87,8 +87,8 @@ body{--s:min(88vw,calc(88vh*1300/760));--g:calc((100vw - var(--s))/2)}
 #stage{z-index:1}
 #flip{left:calc(var(--g)*.2);bottom:calc(27vh - 3px);width:min(calc(var(--g)*.42),120px)}
 #wallet{left:calc(var(--g)*.14);bottom:5vh;width:min(calc(var(--g)*.66),190px)}
-#mp3{right:calc(var(--g)*.22);bottom:calc(27vh - 3px);width:min(calc(var(--g)*.42),120px)}
-#hangcd{right:calc(var(--g)*.3);top:0;width:min(calc(var(--g)*.3),90px);transform-origin:50% 0;animation:sway 5.4s ease-in-out infinite}
+#listing{right:calc(var(--g)*.16);bottom:calc(27vh - 8px);width:min(calc(var(--g)*.62),170px)}
+#chainMount{position:absolute;right:calc(var(--g)*.3);top:30px;width:70px;height:172px}
 #world{background:#010818}
 #pulse{background:radial-gradient(ellipse 70% 100% at 50% 100%,#39d6ff66,#39d6ff00)}
 #lamps{background:linear-gradient(90deg,#8fe0ff00,#8fe0ff22 46%,#c8f4ff38 52%,#8fe0ff00)}
@@ -97,7 +97,7 @@ body{--s:min(88vw,calc(88vh*1300/760));--g:calc((100vw - var(--s))/2)}
 #dashBand::after{top:7vh;background:repeating-linear-gradient(45deg,#14181f 0 4px,#0a0d13 4px 8px)}
 .tick{background:#02101e;color:#7fe8ff;font-family:Consolas,'Courier New',monospace;text-shadow:0 0 7px #39d6ff;box-shadow:0 2px 0 #123a5c}
 .tick::after{background:radial-gradient(circle at 50% 50%,#0000 42%,#02101ecc 52%);background-size:3px 3px}
-@media (max-width:900px){#flip,#wallet,#mp3,#hangcd{display:none}}
+@media (max-width:900px){#flip,#wallet,#listing{display:none}#chainMount{right:12px}}
 dialog{width:min(92vw,520px);padding:24px;border:1px solid var(--line);border-radius:12px;background:#0b0c10;color:var(--text)}
 dialog::backdrop{background:#000b}
 dialog h2{margin:0 0 4px;font-size:18px;font-weight:400}
@@ -111,7 +111,7 @@ label{display:block;margin:18px 0 6px;color:var(--dim);font:600 14px 'Saira Cond
 input[type=url]{width:100%;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:#000;color:var(--text);font:15px Arial,sans-serif}
 #trayMsg{min-height:20px;margin:12px 0 0;color:var(--amber)}
 .close{margin-top:6px;width:100%}
-@media (prefers-reduced-motion:reduce){#disc.spin,#disc.spinup,#monitor,#track,#lamps,.tick div,#hangcd{animation:none}#shade{display:none}}
+@media (prefers-reduced-motion:reduce){#disc.spin,#disc.spinup,#monitor,#track,#lamps,.tick div{animation:none}#shade{display:none}}
 </style>
 </head>
 <body>
@@ -122,6 +122,7 @@ input[type=url]{width:100%;padding:0 12px;border:1px solid var(--line);border-ra
   <div id="lamps"></div>
 
   <div class="tick"><div><span></span><span></span></div></div>
+  <div id="chainMount"></div>
 </div>
 <main id="stage">
   <div id="unit"></div>
@@ -165,6 +166,7 @@ input[type=url]{width:100%;padding:0 12px;border:1px solid var(--line);border-ra
 
 <script src="core.js"></script>
 <script src="cabin.js"></script>
+<script src="keychain.js"></script>
 <script src="unit.js"></script>
 <script src="world.js"></script>
 <script src="player.js"></script>

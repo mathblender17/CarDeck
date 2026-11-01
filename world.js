@@ -76,7 +76,7 @@
     seed = 41; paint(c.getContext('2d'))
   }
 
-  const text = 'NEW MESSAGE: where r u??   >>   CD-R 700MB 80MIN   >>   Y2K: NOTHING HAPPENED   >>   BROADBAND IS HERE   >>   BATTERY |||   SIGNAL |||   >>   BURN COMPLETE: ROAD MIX 02   >>   '
+  const text = '23:41 LEFT THE OFFICE   >>   COVERED THE LATE SHIFT FOR THE NEW GUY AGAIN   >>   NEW MESSAGE: thanks for tonight, boss   >>   SPEEDOMETER STILL BROKEN   >>   NO TIME FOR THE MECHANIC   >>   TOKYO BAY BEHIND YOU   >>   SAVED: MOTORCYCLE LISTINGS (3)   >>   KEEP GOING   >>   '
   for (const el of document.querySelectorAll('.tick span')) el.textContent = text
 
   const world = document.getElementById('world')
@@ -95,19 +95,14 @@
   <svg class="trinket" id="wallet" viewBox="0 0 186 118">
     <rect x="6" y="14" width="174" height="100" rx="12" fill="#17191f" stroke="#3a4050" stroke-width="2"/>
     <circle cx="66" cy="62" r="42" fill="#d9e2ee"/><circle cx="66" cy="62" r="42" fill="url(#cdr)"/><circle cx="66" cy="62" r="12" fill="#17191f"/>
-    <text x="44" y="42" font-size="11" font-family="Comic Sans MS,Segoe Print,cursive" fill="#14181f" transform="rotate(-8 44 42)">road mix 02</text>
+    <text x="44" y="42" font-size="11" font-family="Comic Sans MS,Segoe Print,cursive" fill="#14181f" transform="rotate(-8 44 42)">automatic</text>
     <rect x="118" y="26" width="52" height="76" rx="4" fill="#252a35"/><path d="M122 44h44M122 62h44M122 80h44" stroke="#3a4050" stroke-width="2"/>
     <defs><linearGradient id="cdr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fe8ff" stop-opacity=".5"/><stop offset=".5" stop-color="#ffd6f5" stop-opacity=".45"/><stop offset="1" stop-color="#fff3b8" stop-opacity=".45"/></linearGradient></defs>
   </svg>
-  <svg class="trinket" id="mp3" viewBox="0 0 130 170">
-    <rect x="12" y="4" width="106" height="160" rx="16" fill="#d7dde6" stroke="#6a7486" stroke-width="2"/>
-    <rect x="24" y="16" width="82" height="62" rx="6" fill="#0a2a66"/><path d="M32 34h44M32 46h60M32 58h30" stroke="#8ce2ff" stroke-width="3"/>
-    <circle cx="65" cy="118" r="30" fill="#aeb7c4" stroke="#6a7486"/><circle cx="65" cy="118" r="11" fill="#e8edf3"/>
-    <path d="M38 164q-10 22 -24 18M92 164q10 22 24 18" fill="none" stroke="#f2f4f7" stroke-width="3"/>
-  </svg>
-  <svg class="trinket" id="hangcd" viewBox="0 0 90 210">
-    <path d="M45 0V124" stroke="#cfd6e4" stroke-width="1.6"/>
-    <circle cx="45" cy="164" r="42" fill="#d9e2ee"/><circle cx="45" cy="164" r="42" fill="url(#cdr2)"/><circle cx="45" cy="164" r="10" fill="#0a1020"/>
-    <defs><linearGradient id="cdr2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fe8ff"/><stop offset=".35" stop-color="#ffd6f5"/><stop offset=".7" stop-color="#fff3b8"/><stop offset="1" stop-color="#b6ffcf"/></linearGradient></defs>
+  <svg class="trinket" id="listing" viewBox="0 0 170 130">
+    <path d="M6 22L150 6L164 112L18 126Z" fill="#e9e4d6"/><path d="M6 22L150 6L152 18L8 34Z" fill="#3a4258"/>
+    <path d="M26 54h46M24 66h40M26 78h46M24 90h30M26 102h44" stroke="#8a8676" stroke-width="3"/>
+    <g fill="none" stroke="#1a1c24" stroke-width="3"><circle cx="102" cy="82" r="12"/><circle cx="142" cy="78" r="12"/><path d="M102 82l16-20h14l10 16M118 62l-4 18h28"/></g>
+    <ellipse cx="122" cy="76" rx="42" ry="30" fill="none" stroke="#d42a2a" stroke-width="2.4" transform="rotate(-6 122 76)"/>
   </svg>`)
 })()

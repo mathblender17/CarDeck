@@ -27,21 +27,15 @@ h1,h2{font-family:Michroma,Arial,sans-serif;font-weight:400;letter-spacing:-.01e
 #unitIn svg{display:block;width:1300px;height:760px;pointer-events:none}
 #unitIn .key{pointer-events:none}
 #unitDim{position:absolute;inset:0;background:#000;opacity:.18;transition:opacity .4s}
-#cd{position:absolute;left:806px;top:112px;width:1.6px;height:150px;transform-origin:50% 0;animation:swing 4.6s ease-in-out infinite;background:#aab6cc}
-#cd i{position:absolute;left:-37px;bottom:-74px;width:76px;height:76px;border-radius:50%;
-  background:radial-gradient(circle,#0a0a0c 0 7%,#c9ced6 7.5% 20%,#fff0 21%),
-  conic-gradient(from 40deg,#bff5ff,#ffd6f5,#fff3b8,#bdffd6,#bccbff,#ffc9da,#dcffb8,#bff5ff);
-  box-shadow:0 0 18px #bfe6ff44;filter:brightness(.72)}
-@keyframes swing{0%,100%{transform:rotate(-3.5deg)}50%{transform:rotate(3.5deg)}}
+#chainMount{position:absolute;left:893px;top:108px;width:70px;height:172px}
 .go:focus-visible{outline:3px solid #fff;outline-offset:3px}
 body.started #unitDim{opacity:0}
 /* the mirror CD lets go, drops to the dash and goes into the slot; this box ends exactly at the slot */
-#slotClip{position:absolute;left:400px;top:0;width:560px;height:692px;overflow:hidden;pointer-events:none}
-#flyer{position:absolute;left:368px;top:260px;width:76px;height:76px;border-radius:50%;opacity:0;
+#slotClip{position:absolute;left:0;top:0;width:1600px;height:692px;overflow:hidden;pointer-events:none}
+#flyer{position:absolute;left:190px;top:24px;width:76px;height:76px;border-radius:50%;opacity:0;
   background:radial-gradient(circle,#0a0a0c 0 7%,#c9ced6 7.5% 20%,#fff0 21%),conic-gradient(from 40deg,#bff5ff,#ffd6f5,#fff3b8,#bdffd6,#bccbff,#ffc9da,#dcffb8,#bff5ff);box-shadow:0 0 22px #bfe6ff88}
-body.started #cd{display:none}
 body.started #flyer{opacity:1;animation:dropIn 1.05s cubic-bezier(.5,0,.75,.6) forwards}
-@keyframes dropIn{0%{transform:translate(0,0) rotate(0) scale(1)}58%{transform:translate(-122px,290px) perspective(500px) rotateX(38deg) rotate(420deg) scale(1.9)}100%{transform:translate(-122px,500px) perspective(500px) rotateX(58deg) rotate(800deg) scale(1.9)}}
+@keyframes dropIn{0%{transform:translate(0,0) rotate(0) scale(1)}58%{transform:translate(456px,526px) perspective(500px) rotateX(38deg) rotate(420deg) scale(1.9)}100%{transform:translate(456px,736px) perspective(500px) rotateX(58deg) rotate(800deg) scale(1.9)}}
 #slotGlow{position:absolute;left:556px;top:688px;width:260px;height:6px;border-radius:3px;background:#4fb2ff;box-shadow:0 0 18px 4px #4fb2ff;opacity:0;transition:opacity .25s}
 body.seated #slotGlow{opacity:1}
 #veil{position:absolute;inset:0;background:radial-gradient(ellipse at 45% 50%,#0000 55%,#000b);pointer-events:none}
@@ -52,6 +46,7 @@ nav b{font:400 15px Michroma,Arial,sans-serif;letter-spacing:.14em}
 nav a{margin-left:24px;text-decoration:none;font-size:17px;color:var(--text)}
 nav a:hover{color:var(--el)}
 #pitch{position:absolute;left:clamp(16px,4.4vw,72px);top:clamp(72px,11vh,110px);width:min(820px,calc(100% - 32px));text-shadow:0 2px 12px #000a;transition:opacity .4s}
+nav,#pitch{pointer-events:none}nav a,nav button,#pitch .go{pointer-events:auto}
 #pitch h1{font-size:clamp(30px,3.5vw,50px);line-height:1.12}
 #pitch p{margin:12px 0 18px;max-width:34em;font-size:21px;line-height:1.35}
 .go{display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 26px;border:0;border-radius:10px;background:var(--el);color:#031225;font:13px Michroma,Arial,sans-serif;cursor:pointer;text-decoration:none;transition:transform .12s,background .12s}
@@ -76,7 +71,7 @@ footer{padding:64px clamp(16px,5vw,72px) 32px;background:var(--ink)}
 footer b{display:block;font:400 clamp(44px,11.6vw,178px)/1 Michroma,Arial,sans-serif;letter-spacing:-.03em;background:linear-gradient(#f4f6f9,#b8bec7 44%,#5b626d 47%,#a9b0ba);-webkit-background-clip:text;background-clip:text;color:transparent}
 footer p{margin:22px 0 0;color:var(--dim);font-size:17px}
 @media (max-width:1000px){.ad{grid-template-columns:1fr}.year{display:none}#manual{padding-top:80px;padding-bottom:80px}nav a:first-of-type{display:none}#pitch p{font-size:19px}}
-@media (prefers-reduced-motion:reduce){#cd{animation:none}html{scroll-behavior:auto}#scene.zoom{transition:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}#scene.zoom{transition:none}}
 </style>
 </head>
 <body>
@@ -84,7 +79,7 @@ footer p{margin:22px 0 0;color:var(--dim);font-size:17px}
   <div id="scene">
     <canvas id="road" width="1067" height="440" aria-hidden="true"></canvas>
     <svg id="dash" viewBox="0 0 1600 900" aria-hidden="true"></svg>
-    <div id="cd"><i></i></div>
+    <div id="chainMount"></div>
     <div id="unitBox" aria-hidden="true"><div id="unitIn"></div><div id="unitDim"></div></div>
     <div id="slotGlow"></div>
     <div id="slotClip"><div id="flyer"></div></div>
@@ -134,6 +129,7 @@ footer p{margin:22px 0 0;color:var(--dim);font-size:17px}
 
 <script src="core.js"></script>
 <script src="cabin.js"></script>
+<script src="keychain.js"></script>
 <script src="unit.js"></script>
 <script src="landing.js"></script>
 </body>

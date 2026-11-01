@@ -2,7 +2,7 @@
 // The car around the music, all synthesised: tyres, wind, expansion joints and a small chime.
 ;(function (root) {
   const KEY = 'cabin'
-  let ctx, master, timers = [], running = false, level = .7
+  let ctx, master, touch, timers = [], running = false, level = .7
   const pref = { get() { try { return localStorage.getItem(KEY) !== 'off' } catch { return true } }, set(on) { try { localStorage.setItem(KEY, on ? 'on' : 'off') } catch {} } }
 
   function noise(seconds, brown) {
@@ -27,6 +27,7 @@
   function build() {
     ctx = new (root.AudioContext || root.webkitAudioContext)()
     master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination)
+    touch = ctx.createGain(); touch.gain.value = 1; touch.connect(ctx.destination)
     const brown = noise(7, true), white = noise(5, false)
     bed(brown, 'lowpass', 240, .6, .95)
     bed(white, 'bandpass', 2300, .5, .02)
@@ -39,8 +40,8 @@
     g.gain.setValueAtTime(.5, when); g.gain.exponentialRampToValueAtTime(.001, when + .16)
     s.connect(f); f.connect(g); g.connect(master); s.start(when); s.stop(when + .2)
   }
-  function ring(freq, when) {
-    const pan = ctx.createStereoPanner(); pan.pan.value = Math.random() * 1.2 - .6; pan.connect(master)
+  function ring(freq, when, out = master) {
+    const pan = ctx.createStereoPanner(); pan.pan.value = Math.random() * 1.2 - .6; pan.connect(out)
     ;[[1, .05], [2.76, .018], [5.4, .007]].forEach(([k, a]) => {
       const o = ctx.createOscillator(), g = ctx.createGain()
       o.frequency.value = freq * k
@@ -73,6 +74,14 @@
     stop() { running = false; timers.forEach(clearTimeout); timers = []; if (ctx) fade(0, .5) },
     toggle() { const on = !pref.get(); pref.set(on); on ? Cabin.start() : Cabin.stop(); return on },
     level(v) { level = v; if (running) fade(v, .9) },
+    // metal on metal in the hand; not part of the road, so it is not ducked under the music
+    clink() {
+      if (!pref.get()) return
+      if (!ctx) build()
+      ctx.resume()
+      const t = ctx.currentTime
+      ring(2093, t, touch); ring(2637, t + .05 + Math.random() * .05, touch)
+    },
     // the disc going home: a soft latch, then the mechanism pulling it in
     insert() {
       if (!ctx || !running) return
