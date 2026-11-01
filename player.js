@@ -259,13 +259,23 @@ $('ytForm').onsubmit = e => {
   if (!id) { $('trayMsg').textContent = 'That is not a YouTube video or playlist link.'; return }
   $('ytUrl').value = ''; loadYouTube(id)
 }
-function loadYouTube(id) {
+function loadYouTube(id, title = 'LOADING') {
   clearPlayers()
   if (disc()) { const free = S.discs.findIndex(d => !d); if (free >= 0) S.slot = free }
-  S.discs[S.slot] = { kind: 'yt', ...id, track: 0, tracks: [], title: 'LOADING' }
+  S.discs[S.slot] = { kind: 'yt', ...id, track: 0, tracks: [], title }
   if (tray.open) tray.close()
   startDisc()
 }
+// the song that is always in this car: Disc 1 until someone changes it
+const AUTOMATIC = { video: 'rJwLPcL2u3c', list: null }
+function playAutomatic() {
+  const i = S.discs.findIndex(d => d?.video === AUTOMATIC.video)
+  if (i < 0) loadYouTube(AUTOMATIC, 'AUTOMATIC')
+  else if (i !== S.slot) selectSlot(i)
+  else if (!S.playing && !reading) togglePlay()
+}
+$('wallet').addEventListener('click', playAutomatic)
+$('wallet').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); playAutomatic() } })
 addEventListener('paste', e => {
   if (e.target.tagName === 'INPUT') return
   const id = parseYouTube(e.clipboardData.getData('text'))
@@ -517,6 +527,10 @@ $('disc').addEventListener('animationend', e => e.target.classList.remove('spinu
 fit(); applyVolume(); refresh()
 Cabin.start()
 const sent = parseYouTube(new URLSearchParams(location.search).get('yt') || '')
-if (sent) { loadYouTube(sent); history.replaceState(null, '', location.pathname) }
+// after the boot sweep, because a loaded disc ends the sweep early
+setTimeout(() => {
+  if (sent) { loadYouTube(sent); history.replaceState(null, '', location.pathname) }
+  else if (!S.discs.some(Boolean)) playAutomatic()
+}, reduced ? 0 : BOOT)
 document.fonts?.ready.then(fit)
 requestAnimationFrame(frame)

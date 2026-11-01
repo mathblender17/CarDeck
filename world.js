@@ -92,7 +92,7 @@
     <circle cx="55" cy="130" r="11" fill="none" stroke="#39b6ff" stroke-width="2.4"/>
     <g stroke="#39b6ff" stroke-width="2.4" fill="none"><path d="M26 154q29 8 58 -2M26 168q29 8 58 -2M26 182q29 8 58 -2M42 148v44M68 148v44"/></g>
   </svg>
-  <svg class="trinket" id="wallet" viewBox="0 0 186 118">
+  <svg class="trinket" id="wallet" viewBox="0 0 186 118" role="button" tabindex="0" aria-label="Play Automatic">
     <rect x="6" y="14" width="174" height="100" rx="12" fill="#17191f" stroke="#3a4050" stroke-width="2"/>
     <circle cx="66" cy="62" r="42" fill="#d9e2ee"/><circle cx="66" cy="62" r="42" fill="url(#cdr)"/><circle cx="66" cy="62" r="12" fill="#17191f"/>
     <text x="44" y="42" font-size="11" font-family="Comic Sans MS,Segoe Print,cursive" fill="#14181f" transform="rotate(-8 44 42)">automatic</text>

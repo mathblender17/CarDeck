@@ -86,7 +86,9 @@ body{--s:min(88vw,calc(88vh*1300/760));--g:calc((100vw - var(--s))/2)}
 @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 #stage{z-index:1}
 #flip{left:calc(var(--g)*.2);bottom:calc(27vh - 3px);width:min(calc(var(--g)*.42),120px)}
-#wallet{left:calc(var(--g)*.14);bottom:5vh;width:min(calc(var(--g)*.66),190px)}
+#wallet{left:calc(var(--g)*.14);bottom:5vh;width:min(calc(var(--g)*.66),190px);cursor:pointer;outline:none;transition:filter .2s,transform .12s}
+#wallet:hover,#wallet:focus-visible{filter:drop-shadow(0 0 8px #7fe8ff)}
+#wallet:active{transform:translateY(1px)}
 #listing{right:calc(var(--g)*.16);bottom:calc(27vh - 8px);width:min(calc(var(--g)*.62),170px)}
 #chainMount{position:absolute;right:calc(var(--g)*.26);top:30px;width:90px;height:190px}
 #world{background:#010818}
