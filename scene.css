@@ -1,0 +1,6 @@
+#scene{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;will-change:transform}
+#road,#dash{position:absolute;left:0;top:0}
+#road{width:1600px;height:660px}
+#dash{width:1600px;height:900px}
+#veil{position:absolute;inset:0;background:radial-gradient(ellipse at 45% 50%,#0000 55%,#000b);pointer-events:none}
+#grain{position:absolute;inset:0;opacity:.16;mix-blend-mode:overlay;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}

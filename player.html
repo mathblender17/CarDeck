@@ -6,6 +6,7 @@
 <title>CarDeck</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Saira+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="scene.css">
 <style>
 :root{--ink:#050608;--line:#3c414b;--text:#dfe5ee;--dim:#98a1ae;--el:#4fb2ff;--amber:#ffb238}
 *{box-sizing:border-box}
@@ -85,6 +86,19 @@ body{--s:min(88vw,calc(88vh*1300/760));--g:calc((100vw - var(--s))/2)}
 .trinket{position:absolute;display:block}
 @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
 #stage{z-index:1}
+/* Drive mode: the unit moves into the dash and the road takes the screen */
+#drive{position:fixed;inset:0;z-index:2;overflow:hidden;background:#000;animation:driveIn .7s ease-out}
+#drive[hidden]{display:none}
+@keyframes driveIn{from{opacity:0}to{opacity:1}}
+body.drive #stage{position:fixed;z-index:3;margin:0}
+body.drive #world{visibility:hidden}
+body.drive #track{animation-play-state:paused}
+body.drive #monitor{--u:376px;position:fixed;left:16px;top:16px;z-index:3;margin:0;animation:none}
+body.drive #monitor::before,body.drive #monitor::after,body.drive #fold{display:none}
+body.drive .plate{padding-bottom:calc(var(--u)*.036)}
+#scene #chainMount{left:883px;right:auto;top:108px}
+#driveExit{position:absolute;right:16px;top:14px;min-height:36px;padding:0 14px;background:#0008;border-color:#ffffff55;font-size:11px}
+@media (max-width:900px){body.drive #monitor{--u:min(100vw,376px);left:0;top:52px}}
 #flip{left:calc(var(--g)*.2);bottom:calc(27vh - 3px);width:min(calc(var(--g)*.42),120px)}
 #wallet{left:calc(var(--g)*.14);bottom:5vh;width:min(calc(var(--g)*.66),190px);cursor:pointer;outline:none;transition:filter .2s,transform .12s}
 #wallet:hover,#wallet:focus-visible{filter:drop-shadow(0 0 8px #7fe8ff)}
@@ -126,6 +140,15 @@ input[type=url]{width:100%;padding:0 12px;border:1px solid var(--line);border-ra
   <div class="tick"><div><span></span><span></span></div></div>
   <div id="chainMount"></div>
 </div>
+<section id="drive" aria-label="Drive mode" hidden>
+  <div id="scene">
+    <canvas id="road" width="1067" height="440" aria-hidden="true"></canvas>
+    <svg id="dash" viewBox="0 0 1600 900" aria-hidden="true"></svg>
+  </div>
+  <div id="veil"></div>
+  <div id="grain"></div>
+  <button id="driveExit">BACK TO THE DECK</button>
+</section>
 <main id="stage">
   <div id="unit"></div>
   <div id="shade" class="layer"></div>
@@ -171,6 +194,7 @@ input[type=url]{width:100%;padding:0 12px;border:1px solid var(--line);border-ra
 <script src="keychain.js"></script>
 <script src="unit.js"></script>
 <script src="world.js"></script>
+<script src="scene.js"></script>
 <script src="player.js"></script>
 </body>
 </html>

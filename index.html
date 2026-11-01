@@ -7,6 +7,7 @@
 <meta name="description" content="CarDeck is a free 2002-style car stereo for your browser. Load your own music or a YouTube link and drive.">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Saira+Condensed:wght@500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="scene.css">
 <style>
 :root{--ink:#050608;--text:#edf1f7;--dim:#a8b2c2;--el:#4fb2ff;--amber:#ffb238;--cobalt:#0a2fb0;--deep:#04124f}
 *{box-sizing:border-box}
@@ -17,11 +18,7 @@ h1,h2{font-family:Michroma,Arial,sans-serif;font-weight:400;letter-spacing:-.01e
 
 /* hero: a fixed 1600x900 scene, scaled to cover the window */
 #hero{position:relative;height:100svh;min-height:560px;overflow:hidden;background:#000}
-#scene{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;will-change:transform}
 #scene.zoom{transition:transform 1.5s cubic-bezier(.62,.02,.2,1)}
-#road,#dash{position:absolute;left:0;top:0}
-#road{width:1600px;height:660px}
-#dash{width:1600px;height:900px}
 #unitBox{position:absolute;left:452px;top:656px;width:390px;height:228px;overflow:hidden;border-radius:4px}
 #unitIn{position:absolute;left:0;top:0;width:1300px;height:760px;transform:scale(.3);transform-origin:0 0;will-change:transform}
 #unitIn svg{display:block;width:1300px;height:760px;pointer-events:none}
@@ -38,8 +35,6 @@ body.started #flyer{opacity:1;animation:dropIn 1.05s cubic-bezier(.5,0,.75,.6) f
 @keyframes dropIn{0%{transform:translate(0,0) rotate(0) scale(1)}58%{transform:translate(456px,526px) perspective(500px) rotateX(38deg) rotate(420deg) scale(1.9)}100%{transform:translate(456px,736px) perspective(500px) rotateX(58deg) rotate(800deg) scale(1.9)}}
 #slotGlow{position:absolute;left:556px;top:688px;width:260px;height:6px;border-radius:3px;background:#4fb2ff;box-shadow:0 0 18px 4px #4fb2ff;opacity:0;transition:opacity .25s}
 body.seated #slotGlow{opacity:1}
-#veil{position:absolute;inset:0;background:radial-gradient(ellipse at 45% 50%,#0000 55%,#000b);pointer-events:none}
-#grain{position:absolute;inset:0;opacity:.16;mix-blend-mode:overlay;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
 #black{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .28s}
 nav{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;padding:20px 32px;transition:opacity .4s}
 nav b{font:400 15px Michroma,Arial,sans-serif;letter-spacing:.14em}
@@ -50,6 +45,7 @@ nav,#pitch{pointer-events:none}nav a,nav button,#pitch .go{pointer-events:auto}
 #pitch h1{font-size:clamp(30px,3.5vw,50px);line-height:1.12}
 #pitch p{margin:12px 0 18px;max-width:34em;font-size:21px;line-height:1.35}
 .go{display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 26px;border:0;border-radius:10px;background:var(--el);color:#031225;font:13px Michroma,Arial,sans-serif;cursor:pointer;text-decoration:none;transition:transform .12s,background .12s}
+.go.ghost{margin-left:8px;background:#0007;color:var(--text);box-shadow:inset 0 0 0 1px #ffffff66}.go.ghost:hover{background:#0009;color:var(--el)}
 .go:hover{background:#86ccff}.go:active{transform:translateY(1px)}
 body.started nav,body.started #pitch{opacity:0;pointer-events:none}
 #sound{min-height:34px;margin-left:24px;padding:0 12px;border:1px solid #ffffff55;border-radius:7px;background:#0006;color:var(--text);font:600 16px 'Saira Condensed',Arial,sans-serif;cursor:pointer}
@@ -94,6 +90,7 @@ footer p{margin:22px 0 0;color:var(--dim);font-size:17px}
     <h1>It's 2002. Put a disc in.</h1>
     <p>CarDeck is a free car stereo for your browser. Load your own music or a YouTube link, and drive.</p>
     <button class="go" id="start">Put a disc in</button>
+    <a class="go ghost" href="player.html?drive=1">Just drive</a>
   </div>
   <div id="black"></div>
 </section>
@@ -131,6 +128,7 @@ footer p{margin:22px 0 0;color:var(--dim);font-size:17px}
 <script src="cabin.js"></script>
 <script src="keychain.js"></script>
 <script src="unit.js"></script>
+<script src="scene.js"></script>
 <script src="landing.js"></script>
 </body>
 </html>

@@ -17,7 +17,7 @@ const store = {
 
 const S = {
   discs: Array(6).fill(null), slot: 0, playing: false, shuffle: false, repeat: 0, mode: 0,
-  vol: store.get('vol', .6), muted: false, msg: '', msgUntil: 0, fold: store.get('fold', false)
+  vol: store.get('vol', .6), muted: false, msg: '', msgUntil: 0, fold: store.get('fold', false), drive: false
 }
 const say = (text, ms = 2600) => { S.msg = text; S.msgUntil = performance.now() + ms }
 const disc = () => S.discs[S.slot]
@@ -210,6 +210,31 @@ function toggleFold() {
 }
 $('fold').onclick = toggleFold
 
+// --- Drive mode: same page, so the music never stops on the way in or out
+let carScene
+function placeUnit() {
+  const v = carScene.view(), U = carScene.UNIT
+  Object.assign($('stage').style, { left: v.x + U.x * v.k + 'px', top: v.y + U.y * v.k + 'px', width: U.w * v.k + 'px' })
+}
+function setDrive(on) {
+  if (on === S.drive) return
+  S.drive = on
+  document.body.classList.toggle('drive', on)
+  $('drive').hidden = !on
+  const mount = $('chainMount')
+  if (on) {
+    carScene ??= CarScene($('drive'))
+    carScene.fit(); carScene.run(true); placeUnit()
+    $('scene').append(mount)
+  } else {
+    carScene.run(false)
+    $('stage').removeAttribute('style'); $('world').append(mount)
+  }
+  refresh()
+}
+addEventListener('resize', () => { if (S.drive) { carScene.fit(); placeUnit() } })
+$('driveExit').onclick = () => setDrive(false)
+
 // --- volume
 function applyVolume() {
   const v = S.muted ? 0 : S.vol
@@ -293,7 +318,8 @@ const ACT = {
   shuffle: () => { S.shuffle = !S.shuffle; yt?.setShuffle?.(S.shuffle); say(S.shuffle ? 'RANDOM ON' : 'RANDOM OFF'); refresh() },
   repeat: () => { S.repeat = (S.repeat + 1) % 3; yt?.setLoop?.(!!S.repeat); say(['REPEAT OFF', 'REPEAT DISC', 'REPEAT TRACK'][S.repeat]); refresh() },
   disp: () => { S.mode = (S.mode + 1) % MODES.length; refresh() },
-  cabin: () => { say(Cabin.toggle() ? 'ROAD SOUND ON' : 'ROAD SOUND OFF'); refresh() }
+  cabin: () => { say(Cabin.toggle() ? 'ROAD SOUND ON' : 'ROAD SOUND OFF'); refresh() },
+  drive: () => setDrive(!S.drive)
 }
 function run(act) {
   const k = stage.querySelector(`[data-act="${act}"]`)
@@ -327,6 +353,8 @@ addEventListener('keydown', e => {
   else if (e.key === 'ArrowRight') run('next')
   else if (e.key === 'ArrowLeft') run('prev')
   else if (e.key === 'v' && disc()?.kind === 'yt') toggleFold()
+  else if (e.key === 'd') run('drive')
+  else if (e.key === 'Escape') setDrive(false)
 })
 
 // --- knob: drag the ring for volume, tap the disc to play or pause
@@ -361,6 +389,8 @@ function refresh() {
   // under music the car is felt more than heard
   Cabin.level(S.playing ? .09 : .7)
   $('led-cabin').classList.toggle('on', Cabin.wanted)
+  $('led-drive').classList.toggle('on', S.drive)
+  carScene?.setMoving(S.playing)
   document.body.classList.toggle('fold', S.fold)
   $('fold').textContent = S.fold ? 'OPEN SCREEN' : 'FOLD SCREEN'
   const spin = $('disc'); spin.classList.toggle('spin', !!d); spin.classList.toggle('hold', !S.playing); spin.classList.toggle('reading', !!reading)
@@ -526,6 +556,7 @@ $('shade').addEventListener('animationend', e => e.target.remove())
 $('disc').addEventListener('animationend', e => e.target.classList.remove('spinup'))
 fit(); applyVolume(); refresh()
 Cabin.start()
+if (new URLSearchParams(location.search).has('drive')) setDrive(true)
 const sent = parseYouTube(new URLSearchParams(location.search).get('yt') || '')
 // after the boot sweep, because a loaded disc ends the sweep early
 setTimeout(() => {
