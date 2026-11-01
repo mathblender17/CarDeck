@@ -125,6 +125,8 @@ async function startYT(d) {
     applyVolume(); yt.setLoop(!!S.repeat); yt.setShuffle(S.shuffle)
     if (d.list) yt.loadPlaylist({ list: d.list, listType: 'playlist', index: d.track })
     else yt.loadVideoById(d.video)
+    // arriving from a link there has been no press yet, so the browser may hold playback back
+    setTimeout(() => { if (disc() === d && !S.playing) say('PRESS PLAY', 8000) }, 3500)
   } catch (e) {
     $('monitor').hidden = true
     say(e.message === 'needs-http' ? 'TUBE NEEDS LOCAL SERVER' : 'TUBE OFFLINE', 6000)
@@ -253,10 +255,20 @@ $('ytForm').onsubmit = e => {
   e.preventDefault()
   const id = parseYouTube($('ytUrl').value)
   if (!id) { $('trayMsg').textContent = 'That is not a YouTube video or playlist link.'; return }
-  clearPlayers()
-  S.discs[S.slot] = { kind: 'yt', ...id, track: 0, tracks: [], title: 'LOADING' }
-  $('ytUrl').value = ''; tray.close(); startDisc()
+  $('ytUrl').value = ''; loadYouTube(id)
 }
+function loadYouTube(id) {
+  clearPlayers()
+  if (disc()) { const free = S.discs.findIndex(d => !d); if (free >= 0) S.slot = free }
+  S.discs[S.slot] = { kind: 'yt', ...id, track: 0, tracks: [], title: 'LOADING' }
+  if (tray.open) tray.close()
+  startDisc()
+}
+addEventListener('paste', e => {
+  if (e.target.tagName === 'INPUT') return
+  const id = parseYouTube(e.clipboardData.getData('text'))
+  if (id) loadYouTube(id); else say('NOT A YOUTUBE LINK')
+})
 const stage = $('stage')
 stage.addEventListener('dragover', e => e.preventDefault())
 stage.addEventListener('drop', e => { e.preventDefault(); loadFiles(e.dataTransfer.files) })
@@ -268,7 +280,8 @@ const ACT = {
   mute: () => { S.muted = !S.muted; applyVolume(); say(S.muted ? 'MUTE' : 'SOUND ON') },
   shuffle: () => { S.shuffle = !S.shuffle; yt?.setShuffle?.(S.shuffle); say(S.shuffle ? 'RANDOM ON' : 'RANDOM OFF'); refresh() },
   repeat: () => { S.repeat = (S.repeat + 1) % 3; yt?.setLoop?.(!!S.repeat); say(['REPEAT OFF', 'REPEAT DISC', 'REPEAT TRACK'][S.repeat]); refresh() },
-  disp: () => { S.mode = (S.mode + 1) % MODES.length; refresh() }
+  disp: () => { S.mode = (S.mode + 1) % MODES.length; refresh() },
+  cabin: () => { say(Cabin.toggle() ? 'ROAD SOUND ON' : 'ROAD SOUND OFF'); refresh() }
 }
 function run(act) {
   const k = stage.querySelector(`[data-act="${act}"]`)
@@ -333,6 +346,8 @@ function refresh() {
   $('led-disp').classList.toggle('on', S.mode > 0)
   document.querySelectorAll('.preset').forEach((k, i) => { k.classList.toggle('loaded', !!S.discs[i]); k.classList.toggle('cur', i === S.slot && !!S.discs[i]) })
   document.body.classList.toggle('moving', S.playing)
+  Cabin.level(S.playing ? .24 : .7)
+  $('led-cabin').classList.toggle('on', Cabin.wanted)
   document.body.classList.toggle('fold', S.fold)
   $('fold').textContent = S.fold ? 'OPEN SCREEN' : 'FOLD SCREEN'
   const spin = $('disc'); spin.classList.toggle('spin', !!d); spin.classList.toggle('hold', !S.playing); spin.classList.toggle('reading', !!reading)
@@ -497,5 +512,8 @@ function frame(now) {
 $('shade').addEventListener('animationend', e => e.target.remove())
 $('disc').addEventListener('animationend', e => e.target.classList.remove('spinup'))
 fit(); applyVolume(); refresh()
+Cabin.start()
+const sent = parseYouTube(new URLSearchParams(location.search).get('yt') || '')
+if (sent) { loadYouTube(sent); history.replaceState(null, '', location.pathname) }
 document.fonts?.ready.then(fit)
 requestAnimationFrame(frame)

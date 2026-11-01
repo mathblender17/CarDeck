@@ -34,7 +34,16 @@ h1,h2{font-family:Michroma,Arial,sans-serif;font-weight:400;letter-spacing:-.01e
   box-shadow:0 0 18px #bfe6ff44;filter:brightness(.72)}
 @keyframes swing{0%,100%{transform:rotate(-3.5deg)}50%{transform:rotate(3.5deg)}}
 .go:focus-visible{outline:3px solid #fff;outline-offset:3px}
-body.go #unitDim{opacity:0}
+body.started #unitDim{opacity:0}
+/* the mirror CD lets go, drops to the dash and goes into the slot; this box ends exactly at the slot */
+#slotClip{position:absolute;left:400px;top:0;width:560px;height:692px;overflow:hidden;pointer-events:none}
+#flyer{position:absolute;left:368px;top:260px;width:76px;height:76px;border-radius:50%;opacity:0;
+  background:radial-gradient(circle,#0a0a0c 0 7%,#c9ced6 7.5% 20%,#fff0 21%),conic-gradient(from 40deg,#bff5ff,#ffd6f5,#fff3b8,#bdffd6,#bccbff,#ffc9da,#dcffb8,#bff5ff);box-shadow:0 0 22px #bfe6ff88}
+body.started #cd{display:none}
+body.started #flyer{opacity:1;animation:dropIn 1.05s cubic-bezier(.5,0,.75,.6) forwards}
+@keyframes dropIn{0%{transform:translate(0,0) rotate(0) scale(1)}58%{transform:translate(-122px,290px) perspective(500px) rotateX(38deg) rotate(420deg) scale(1.9)}100%{transform:translate(-122px,500px) perspective(500px) rotateX(58deg) rotate(800deg) scale(1.9)}}
+#slotGlow{position:absolute;left:556px;top:688px;width:260px;height:6px;border-radius:3px;background:#4fb2ff;box-shadow:0 0 18px 4px #4fb2ff;opacity:0;transition:opacity .25s}
+body.seated #slotGlow{opacity:1}
 #veil{position:absolute;inset:0;background:radial-gradient(ellipse at 45% 50%,#0000 55%,#000b);pointer-events:none}
 #grain{position:absolute;inset:0;opacity:.16;mix-blend-mode:overlay;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E")}
 #black{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .28s}
@@ -47,7 +56,9 @@ nav a:hover{color:var(--el)}
 #pitch p{margin:12px 0 18px;max-width:34em;font-size:21px;line-height:1.35}
 .go{display:inline-flex;align-items:center;gap:12px;min-height:54px;padding:0 26px;border:0;border-radius:10px;background:var(--el);color:#031225;font:13px Michroma,Arial,sans-serif;cursor:pointer;text-decoration:none;transition:transform .12s,background .12s}
 .go:hover{background:#86ccff}.go:active{transform:translateY(1px)}
-body.go nav,body.go #pitch{opacity:0;pointer-events:none}
+body.started nav,body.started #pitch{opacity:0;pointer-events:none}
+#sound{min-height:34px;margin-left:24px;padding:0 12px;border:1px solid #ffffff55;border-radius:7px;background:#0006;color:var(--text);font:600 16px 'Saira Condensed',Arial,sans-serif;cursor:pointer}
+#sound:hover{color:var(--el)}
 
 /* the print ad */
 #manual{position:relative;overflow:hidden;background:var(--cobalt);padding:120px clamp(16px,5vw,72px)}
@@ -75,12 +86,14 @@ footer p{margin:22px 0 0;color:var(--dim);font-size:17px}
     <svg id="dash" viewBox="0 0 1600 900" aria-hidden="true"></svg>
     <div id="cd"><i></i></div>
     <div id="unitBox" aria-hidden="true"><div id="unitIn"></div><div id="unitDim"></div></div>
+    <div id="slotGlow"></div>
+    <div id="slotClip"><div id="flyer"></div></div>
   </div>
   <div id="veil"></div>
   <div id="grain"></div>
   <nav aria-label="Main">
     <b>CARDECK</b>
-    <span><a href="#manual">Owner's manual</a><a href="player.html">Open the player</a></span>
+    <span><a href="#manual">Owner's manual</a><a href="player.html">Open the player</a><button id="sound">Sound on</button></span>
   </nav>
   <div id="pitch">
     <h1>It's 2002. Put a disc in.</h1>
@@ -104,6 +117,8 @@ footer p{margin:22px 0 0;color:var(--dim);font-size:17px}
       <p>The spectrum reads the real audio from your files. YouTube bars are simulated, and the display says so.</p>
       <h3>Your files stay yours</h3>
       <p>Everything plays on your own computer. Nothing is uploaded and there is no account.</p>
+      <h3>Send songs from YouTube</h3>
+      <p>Drag <a id="bookmarklet" href="player.html">Play in CarDeck</a> to your bookmarks bar, then click it on any YouTube video or playlist. Or copy a link and press Ctrl+V in the player.</p>
       <h3>Best on a desktop</h3>
       <p>Made for Chrome or Edge on a big screen. It fits a phone, but the keys get small.</p>
       <button class="go" id="start2">Put a disc in</button>
@@ -118,6 +133,7 @@ footer p{margin:22px 0 0;color:var(--dim);font-size:17px}
 </footer>
 
 <script src="core.js"></script>
+<script src="cabin.js"></script>
 <script src="unit.js"></script>
 <script src="landing.js"></script>
 </body>

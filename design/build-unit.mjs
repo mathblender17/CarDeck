@@ -142,7 +142,8 @@ for (let i = 0; i < 6; i++) bottomKey(356 + i * 104, 92, 'disc' + i, 'Disc ' + (
 micro('TRACK / SEEK', 192, 593, '#8D95A1', 'middle')
 micro('DISC CHANGER', 662, 593, '#8D95A1', 'middle')
 add(`<circle cx="1046" cy="624" r="17" fill="url(#hub)"/><circle cx="1046" cy="624" r="9" fill="#050505"/>`); micro('AUX IN', 1046, 593, '#8D95A1', 'middle')
-add(`<rect x="1094" y="608" width="86" height="32" rx="6" fill="#2A0508" stroke="#5A1A1E"/><rect x="1098" y="611" width="78" height="9" rx="4" fill="#ff5a4a" opacity=".22"/>`); micro('REMOTE', 1137, 593, '#8D95A1', 'middle')
+bottomKey(1094, 86, 'cabin', 'Road sound', 'ROAD')
+add(`<circle class="led" id="led-cabin" cx="1137" cy="590" r="3.5" fill="${COL.mint}" filter="url(#glow)"/>`)
 add(`</svg>`)
 
 const svg = out.join('\n')
