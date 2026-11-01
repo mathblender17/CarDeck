@@ -5,6 +5,7 @@
   const style = document.createElement('style')
   style.textContent = `.keychain{position:absolute;left:0;top:0;width:90px;height:190px;padding:0;border:0;background:none;cursor:grab;touch-action:none;transform-origin:45px 0;will-change:transform}
 .kc-game{transform-origin:64px 118px}
+.keychain,.keychain:hover{background:none;border:0}
 .keychain:active{cursor:grabbing}.keychain:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .keychain svg{display:block;width:100%;height:100%;overflow:visible;transition:filter 1.2s}
 .keychain.comfort svg{filter:drop-shadow(0 0 9px #ffd98a)}`
